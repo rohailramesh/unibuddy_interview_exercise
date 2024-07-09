@@ -154,6 +154,10 @@ export class ChatMessageModel {
   })
   reactions?: Reaction[];
 
+  @Prop({ type: [String], default: [] })
+  @Field(() => [String], { nullable: false })
+  tags?: string[];
+
   /**
    * All the properties below are virtual properties
    * @url https://mongoosejs.com/docs/tutorials/virtuals.html
@@ -202,5 +206,6 @@ export function chatMessageToObject(
     ...parsed,
     id: new ObjectID(parsed.id),
     text: maskDeletedMessageText(parsed.deleted, parsed.text),
+    tags: parsed.tags || [], //array of tags
   };
 }

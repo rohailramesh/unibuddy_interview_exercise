@@ -385,4 +385,85 @@ export class MessageData {
 
     return chatMessageToObject(updatedResult);
   }
+
+  // Three new functions for part 3 of the assignment below
+  async addTagToMessage(
+    messageId: ObjectID,
+    tag: string,
+    senderId: ObjectID,
+  ): Promise<ChatMessage> {
+    try {
+      const message = await this.chatMessageModel.findOne({
+        _id: messageId,
+        senderId,
+      });
+      if (!message) {
+        throw new Error('Message not found or user is not the sender');
+      }
+
+      if (typeof tag !== 'string' || tag.trim() === '') {
+        throw new Error('Invalid tag');
+      }
+
+      if (!message.tags.includes(tag)) {
+        message.tags.push(tag);
+        await message.save();
+      }
+      return chatMessageToObject(message);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateTagOnMessage(
+    messageId: ObjectID,
+    oldTag: string,
+    newTag: string,
+    senderId: ObjectID,
+  ): Promise<ChatMessage> {
+    try {
+      const message = await this.chatMessageModel.findOne({
+        _id: messageId,
+        senderId,
+      });
+      if (!message) {
+        throw new Error('Message not found or user is not the sender');
+      }
+
+      // Validate tags
+      if (
+        typeof oldTag !== 'string' ||
+        oldTag.trim() === '' ||
+        typeof newTag !== 'string' ||
+        newTag.trim() === ''
+      ) {
+        throw new Error('Invalid tag');
+      }
+
+      const tagIndex = message.tags.indexOf(oldTag);
+      if (tagIndex === -1) {
+        throw new Error('Tag not found on message');
+      }
+
+      message.tags[tagIndex] = newTag;
+      await message.save();
+
+      return chatMessageToObject(message);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async findMessagesByTag(tag: string): Promise<ChatMessage[]> {
+    try {
+      if (typeof tag !== 'string' || tag.trim() === '') {
+        throw new Error('Invalid tag');
+      }
+
+      const messages = await this.chatMessageModel.find({ tags: tag });
+      return messages.map(chatMessageToObject);
+    } catch (error) {
+      throw error;
+    }
+  }
 }

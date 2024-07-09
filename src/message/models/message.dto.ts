@@ -5,6 +5,7 @@ import {
   ObjectType,
   registerEnumType,
 } from '@nestjs/graphql';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { ObjectID } from 'mongodb';
 
 export enum GifType {
@@ -176,4 +177,35 @@ export class ReactionDto {
 
   @Field(() => ObjectID)
   conversationId: ObjectID;
+}
+
+// DTO for new tag operations, AddTag, UpdateTag and FindByTag
+@InputType()
+export class AddTagDto {
+  @IsString()
+  @IsNotEmpty()
+  @Field(() => ObjectID)
+  messageId: ObjectID;
+
+  @Field(() => [String])
+  tags: string[];
+}
+
+@InputType()
+export class UpdateTagDto {
+  @IsString()
+  @IsNotEmpty()
+  @Field(() => ObjectID)
+  messageId: ObjectID;
+
+  @Field(() => [String])
+  tags: string[];
+}
+
+@InputType()
+export class FindByTagDto {
+  @IsString()
+  @IsNotEmpty()
+  @Field(() => [String])
+  tags: string[];
 }

@@ -170,6 +170,26 @@ export class MessageResolver {
   text(@Parent() message: ChatMessage): string {
     return this.safeguardingService.clean(message.text);
   }
+
+  // resolvers for three new operations in task 3
+  @Mutation(() => ChatMessage)
+  async addTagToMessage(
+    @Args('addTagDto') addTagDto: AddTagDto,
+  ): Promise<ChatMessage> {
+    return this.messageLogic.addTagToMessage(addTagDto);
+  }
+
+  @Mutation(() => ChatMessage)
+  async updateTagToMessage(
+    @Args('addTagDto') addTagDto: AddTagDto,
+  ): Promise<ChatMessage> {
+    return this.messageLogic.updateTagToMessage(addTagDto);
+  }
+
+  @Query(() => [ChatMessage])
+  async getMessagesByTag(@Args('tag') tag: string): Promise<ChatMessage[]> {
+    return this.messageLogic.getMessagesByTag(tag);
+  }
 }
 
 @Resolver(() => RichMessageContent)

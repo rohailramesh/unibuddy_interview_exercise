@@ -148,6 +148,10 @@ export class ChatMessage {
 
   @Field({ defaultValue: false, nullable: true })
   isSenderBlocked?: boolean;
+
+  //adding a field for tags which has type of string array
+  @Field(() => [String], { nullable: true })
+  tags?: string[];
 }
 
 /***
